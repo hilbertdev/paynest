@@ -29,6 +29,9 @@ PayNest is a fictional fintech company providing a simplified commerce backend. 
 # Compile the project
 mvn compile
 
+# Run unit tests
+mvn test
+
 # Run the application
 mvn exec:java
 ```
@@ -81,17 +84,42 @@ Capstone 2 extends the codebase with a payment system using interfaces and polym
 
 Students learn: interfaces, inheritance, polymorphism, and dependency design.
 
+## Capstone 3 Description
+
+**Adaptive Payment Routing & Risk Engine (Skeleton)**
+
+Capstone 3 adds a **barebones scaffolding** for routing transactions to payment providers and assessing risk. **It is not a complete solution:** methods are stubs or placeholders with `TODO` comments so students can implement policy, thresholds, and integration.
+
+**Core concepts:**
+
+- **Interfaces:** `PaymentProvider`, `RoutingRule`, `RiskEvaluator`, `RoutingEngine` — contracts only; students fill in behavior.
+- **Routing:** `DefaultRoutingEngine` + `RouteDecision` — loop shell and placeholder decision; students implement rule ordering, provider selection, and fallback.
+- **Rules:** `AbstractRoutingRule` and example rules (`AmountRoutingRule`, `BankSupportRule`, `FallbackRule`) — default `matches` returns false; students encode real conditions.
+- **Providers:** `BasePaymentProvider`, `ProviderA`, `ProviderB` — placeholder `process` implementations.
+- **Risk:** `RiskLevel` enum and `BasicRiskEvaluator` — default `LOW`; students add amount/frequency logic.
+- **Config & audit:** `RoutingConfig` for priority/thresholds structure; `DecisionLogger` prints to the console for now.
+
+**New domain:** `Transaction` (`amount`, `bank`, `timestamp`) for routing and risk evaluation.
+
+Run tests with `mvn test`. The main entry point (`PayNestApplication`) still demonstrates Capstones 1–2; you can wire `DefaultRoutingEngine` and sample lists in your own `main` or tests as you explore Capstone 3.
+
 ## Learning Objectives
 
 - **Capstone 1:** Classes, objects, constructors, encapsulation, collections (`List`), basic business logic
 - **Capstone 2:** Interfaces, inheritance, polymorphism, dependency design, basic architecture
+- **Capstone 3:** Layered design, strategy-style routing, risk scoring, configuration placeholders, and extending interfaces without a finished rules engine
 
 ## Project Structure
 
 ```
 src/main/java/com/paynestsystem/
-├── domain/      # Core business objects (Product, Customer, OrderItem, Order)
+├── domain/      # Core business objects (Product, Customer, OrderItem, Order, Transaction)
 ├── service/     # Business logic (OrderService)
 ├── payment/     # Payment implementations (PaymentMethod, CardPayment, EftPayment, WalletPayment, PaymentProcessor)
+├── routing/     # RoutingEngine, DefaultRoutingEngine, RouteDecision, DecisionLogger
+├── rules/       # RoutingRule, AbstractRoutingRule, example rules
+├── providers/   # PaymentProvider, BasePaymentProvider, ProviderA, ProviderB
+├── risk/        # RiskLevel, RiskEvaluator, BasicRiskEvaluator
+├── config/      # RoutingConfig (placeholder)
 └── app/         # CLI application entry point (PayNestApplication)
 ```
