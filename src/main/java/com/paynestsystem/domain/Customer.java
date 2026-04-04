@@ -1,5 +1,7 @@
 package com.paynestsystem.domain;
 
+import static com.paynestsystem.common.ValidationUtils.requireNonBlank;
+
 /**
  * Represents a customer who can place orders on the PayNest platform.
  * Each customer has an id, name, and email address.
@@ -19,8 +21,8 @@ public class Customer {
      */
     public Customer(int id, String name, String email) {
         this.id = id;
-        this.name = name;
-        this.email = email;
+        this.name = requireNonBlank(name, "name");
+        this.email = requireNonBlank(email, "email");
     }
 
     public int getId() {

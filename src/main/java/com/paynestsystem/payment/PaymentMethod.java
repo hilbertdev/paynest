@@ -19,5 +19,5 @@ public interface PaymentMethod {
      *
      * @return the payment type name
      */
-    String getPaymentType();
+    PaymentType getPaymentType();
 }

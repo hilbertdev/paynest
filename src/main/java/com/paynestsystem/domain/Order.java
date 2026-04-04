@@ -1,10 +1,14 @@
 package com.paynestsystem.domain;
 
+import com.paynestsystem.common.CurrencyFormatter;
 import com.paynestsystem.payment.PaymentMethod;
 import com.paynestsystem.payment.PaymentProcessor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static com.paynestsystem.common.ValidationUtils.requireNonNull;
 
 /**
  * Represents an order placed by a customer.
@@ -15,6 +19,7 @@ public class Order {
     private final int id;
     private final Customer customer;
     private final List<OrderItem> items;
+    private final PaymentProcessor paymentProcessor;
 
     /**
      * Creates a new order for the given customer.
@@ -23,8 +28,13 @@ public class Order {
      * @param customer the customer placing the order
      */
     public Order(int id, Customer customer) {
+        this(id, customer, new PaymentProcessor());
+    }
+
+    public Order(int id, Customer customer, PaymentProcessor paymentProcessor) {
         this.id = id;
-        this.customer = customer;
+        this.customer = requireNonNull(customer, "customer");
+        this.paymentProcessor = requireNonNull(paymentProcessor, "paymentProcessor");
         this.items = new ArrayList<>();
     }
 
@@ -35,9 +45,7 @@ public class Order {
      * @param quantity the number of units
      */
     public void addItem(Product product, int quantity) {
-        // Students can extend here: add validation (e.g. quantity > 0, product not null)
-        OrderItem orderItem = new OrderItem(product, quantity);
-        items.add(orderItem);
+        items.add(new OrderItem(product, quantity));
     }
 
     /**
@@ -48,9 +56,30 @@ public class Order {
     public double calculateTotal() {
         double total = 0.0;
         for (OrderItem item : items) {
-            total = total + item.calculateTotal();
+            total += item.calculateTotal();
         }
         return total;
+    }
+
+    public String buildSummary() {
+        StringBuilder summary = new StringBuilder();
+        summary.append("Order Summary").append(System.lineSeparator());
+        summary.append("Customer: ").append(customer.getName()).append(System.lineSeparator());
+        summary.append(System.lineSeparator());
+        summary.append("Items:").append(System.lineSeparator());
+
+        for (OrderItem item : items) {
+            summary.append(item.getProduct().getName())
+                    .append(" x")
+                    .append(item.getQuantity())
+                    .append(" - ")
+                    .append(CurrencyFormatter.formatZar(item.calculateTotal()))
+                    .append(System.lineSeparator());
+        }
+
+        summary.append(System.lineSeparator());
+        summary.append("Total: ").append(CurrencyFormatter.formatZar(calculateTotal()));
+        return summary.toString();
     }
 
     /**
@@ -58,17 +87,7 @@ public class Order {
      * Shows customer name, each item with quantity and price, and the total.
      */
     public void printSummary() {
-        System.out.println("Order Summary");
-        System.out.println("Customer: " + customer.getName());
-        System.out.println();
-        System.out.println("Items:");
-        for (OrderItem item : items) {
-            String line = item.getProduct().getName() + " x" + item.getQuantity()
-                    + " - R" + String.format("%.0f", item.calculateTotal());
-            System.out.println(line);
-        }
-        System.out.println();
-        System.out.println("Total: R" + String.format("%.0f", calculateTotal()));
+        System.out.println(buildSummary());
     }
 
     public int getId() {
@@ -80,7 +99,7 @@ public class Order {
     }
 
     public List<OrderItem> getItems() {
-        return items;
+        return Collections.unmodifiableList(items);
     }
 
     /**
@@ -90,8 +109,7 @@ public class Order {
      */
     public void checkout(PaymentMethod paymentMethod) {
         double total = calculateTotal();
-        PaymentProcessor processor = new PaymentProcessor();
-        processor.processPayment(paymentMethod, total);
+        paymentProcessor.processPayment(paymentMethod, total);
         System.out.println("Order completed successfully.");
     }
 }

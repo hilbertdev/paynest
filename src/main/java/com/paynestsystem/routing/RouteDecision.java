@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.paynestsystem.common.ValidationUtils.requireNonBlank;
+
 /**
  * Result of a routing decision: which provider was chosen and why (Capstone 3 skeleton).
  */
@@ -22,7 +24,7 @@ public class RouteDecision {
             List<String> appliedRules,
             boolean fallbackUsed) {
         this.selectedProvider = selectedProvider;
-        this.reason = reason;
+        this.reason = requireNonBlank(reason, "reason");
         this.appliedRules = appliedRules != null
                 ? new ArrayList<>(appliedRules)
                 : new ArrayList<>();

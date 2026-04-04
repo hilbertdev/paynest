@@ -1,5 +1,8 @@
 package com.paynestsystem.domain;
 
+import static com.paynestsystem.common.ValidationUtils.requireNonNull;
+import static com.paynestsystem.common.ValidationUtils.requirePositive;
+
 /**
  * Represents a single line item in an order.
  * Links a product to a quantity and provides the total cost for that line.
@@ -16,8 +19,8 @@ public class OrderItem {
      * @param quantity the number of units
      */
     public OrderItem(Product product, int quantity) {
-        this.product = product;
-        this.quantity = quantity;
+        this.product = requireNonNull(product, "product");
+        this.quantity = requirePositive(quantity, "quantity");
     }
 
     /**
