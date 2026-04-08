@@ -6,14 +6,19 @@ import com.paynestsystem.domain.Product;
 import com.paynestsystem.payment.CardPayment;
 import com.paynestsystem.payment.PaymentMethod;
 import com.paynestsystem.service.OrderService;
+import com.paynestsystem.types.TypesDemo;
 
 /**
  * Main entry point for the PayNest application.
- * Demonstrates the core commerce flow (Capstone 1) and payment processing (Capstone 2).
+ * Demonstrates the Java Types foundation module, core commerce flow (Capstone 1),
+ * and payment processing (Capstone 2).
  */
 public class PayNestApplication {
 
     public static void main(String[] args) {
+        // --- Foundation: Java Types ---
+        TypesDemo.runAllDemos();
+
         // --- Capstone 1: Core Commerce Engine ---
         // Create sample products
         Product laptop = new Product(1, "Laptop", 12000);

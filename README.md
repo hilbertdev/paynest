@@ -59,6 +59,20 @@ Amount: R12400
 Order completed successfully.
 ```
 
+## Foundation Module: Java Types
+
+**Java Type System**
+
+This foundational module introduces the Java type system using PayNest fintech examples. It is a prerequisite for all capstones and covers the building blocks of Java programming.
+
+- **Enum:** `CurrencyCode` — enum with fields, constructors, and methods (ZAR, USD, EUR, GBP with exchange rates)
+- **Record:** `Money` — Java record with compact constructor, demonstrating precision in fintech (cents vs floating-point)
+- **Sealed Interface:** `AccountType` with permitted subtypes `SavingsAccount`, `ChequeAccount`, `CreditAccount` — restricted type hierarchies
+- **Generic Class:** `TransactionResult<T>` — type-safe result wrapper with static factory methods
+- **Demo Class:** `TypesDemo` — demonstrates primitive types, reference types, type casting, wrapper classes, autoboxing/unboxing, type inference (`var`), `instanceof` with pattern matching, and exhaustive `switch` over sealed types
+
+Students learn: primitive and reference types, type casting (widening/narrowing), wrapper classes, autoboxing/unboxing, type inference (`var`), enums with behaviour, records, sealed classes, `instanceof` pattern matching, switch pattern matching, and generics basics.
+
 ## Capstone 1 Description
 
 **Core Commerce Engine**
@@ -105,6 +119,7 @@ Run tests with `mvn test`. The main entry point (`PayNestApplication`) still dem
 
 ## Learning Objectives
 
+- **Foundation:** Primitive types, reference types, type casting, wrapper classes, autoboxing/unboxing, type inference (`var`), enums, records, sealed classes, pattern matching, generics
 - **Capstone 1:** Classes, objects, constructors, encapsulation, collections (`List`), basic business logic
 - **Capstone 2:** Interfaces, inheritance, polymorphism, dependency design, basic architecture
 - **Capstone 3:** Layered design, strategy-style routing, risk scoring, configuration placeholders, and extending interfaces without a finished rules engine
@@ -113,6 +128,7 @@ Run tests with `mvn test`. The main entry point (`PayNestApplication`) still dem
 
 ```
 src/main/java/com/paynestsystem/
+├── types/       # Foundation: Java Types (CurrencyCode, Money, AccountType, TransactionResult, TypesDemo)
 ├── domain/      # Core business objects (Product, Customer, OrderItem, Order, Transaction)
 ├── service/     # Business logic (OrderService)
 ├── payment/     # Payment implementations (PaymentMethod, CardPayment, EftPayment, WalletPayment, PaymentProcessor)
