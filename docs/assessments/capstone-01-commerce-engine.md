@@ -12,28 +12,52 @@ Merchants currently patch together spreadsheets and WhatsApp messages. That brea
 
 ## System Requirements
 
+If you are new to Java, read each requirement as a small class or method to build. Complete the classes in the order below before worrying about polish.
+
 **Product catalogue**
 
-- Represent salable items with stable identity (id), display name, and unit price in Rand.
-- Support adding multiple units of the same product to an order.
+- Define a `Product` class to represent something the merchant can sell.
+- Give each `Product` three private fields: an `id`, a display `name`, and a unit `price` in Rand.
+- Add a constructor so a product can be created in one line, for example `new Product(1, "Laptop", 12000)`.
+- Add getter methods so other classes can read the product name and price when building an order summary.
 
 **Customer identity**
 
-- Orders belong to a customer with id, name, and contact detail sufficient for a receipt header.
+- Define a `Customer` class for the person buying from the merchant.
+- Give each `Customer` an `id`, `name`, and contact detail such as `email`.
+- Add a constructor and getters so the order can print the customer's name in the receipt header.
 
 **Order lifecycle (read-only checkout for Capstone 1)**
 
-- Create an empty order for a customer.
-- Add line items (product + quantity). Quantities must be positive integers for this programme unless your instructor approves otherwise.
-- Produce an **order summary** that lists each line (product name, quantity, line subtotal) and a **grand total** equal to the sum of line subtotals.
+- Define an `Order` class to create an empty order for a customer.
+- Store the order's `id`, the `Customer`, and a `List<OrderItem>` for the products added to the order.
+- Define an `OrderItem` class to link one `Product` with one `quantity`.
+- In `OrderItem`, add a method such as `calculateTotal()` that returns `product price * quantity`.
+- In `Order`, add a method such as `addItem(Product product, int quantity)` to add a new `OrderItem` to the list. Quantities must be positive integers for this programme unless your instructor approves otherwise.
+- In `Order`, add a method such as `calculateTotal()` that loops through all order items and adds their line totals together.
+- In `Order`, produce an **order summary** that lists each line (product name, quantity, line subtotal) and a **grand total** equal to the sum of line subtotals.
 
 **Demonstration workflow**
 
-- The application entry point demonstrates creating sample products, a customer, an order, adding items, and printing the summary (behaviour aligned with the repository’s sample run).
+- In `PayNestApplication`, create at least two sample `Product` objects.
+- Create one sample `Customer`.
+- Use an `OrderService` class, or the `Order` constructor directly if your instructor allows it, to create an order for that customer.
+- Add at least two line items to the order, including one product with quantity greater than `1`.
+- Print the order summary so a reviewer can see the customer, each line item, and the grand total.
 
 **Operational clarity**
 
 - Someone reading console output can reconcile totals manually without hidden magic numbers.
+
+## Suggested Implementation Order for Beginners
+
+1. Create or complete the simple data classes first: `Product` and `Customer`.
+2. Create `OrderItem` and test that one line subtotal is calculated correctly.
+3. Create `Order` with an empty `List<OrderItem>` in its constructor.
+4. Add `Order#addItem(...)`, then confirm that the list grows when items are added.
+5. Add `Order#calculateTotal()` by looping through the list and summing each `OrderItem` total.
+6. Add `Order#printSummary()` only after the calculations are correct.
+7. Use `PayNestApplication` to manually run the full flow from product creation to printed summary.
 
 ## Technical Constraints
 

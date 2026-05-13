@@ -12,24 +12,47 @@ Hard-coded branching per payment type **does not scale**: each new rail duplicat
 
 ## System Requirements
 
+This capstone starts from the order classes in Capstone 1. If you are new to Java, think of the work as adding one interface, several small payment classes, and one checkout flow that uses the interface.
+
 **Polymorphic payment processing**
 
-- Represent “how we pay” as a reusable abstraction (`PaymentMethod`-style contract in the codebase).
-- Provide **at least three** concrete rails (card, EFT, wallet) with distinct user-visible messaging (`getPaymentType()` or equivalent).
+- Define a `PaymentMethod` interface to represent "how the customer pays".
+- Add a method such as `boolean processPayment(double amount)` to the interface. Every payment type must implement this method.
+- Add a method such as `String getPaymentType()` so each payment type can describe itself in console output.
+- Create **at least three** classes that implement `PaymentMethod`, for example `CardPayment`, `EftPayment`, and `WalletPayment`.
+- In each concrete payment class, print a short message that makes it clear which rail is being used.
 - Process a payment for the **order grand total** using `processPayment(double amount)` semantics aligned with the starter implementation.
 
 **Checkout orchestration**
 
-- Order checkout must **calculate the total from line items** (same business meaning as Capstone 1) and pass that amount into the payment abstraction.
+- Define one checkout path that accepts a `PaymentMethod` parameter instead of hard-coding a specific payment class.
+- During checkout, calculate the total from the order's line items using the same business meaning as Capstone 1.
+- Pass that calculated amount into the selected `PaymentMethod`.
 - Successful checkout prints confirmation tying **payment rail**, **amount**, and **order completion** (behaviour consistent with `PayNestApplication` expectations).
 
 **Integration surface**
 
-- Callers (such as `PaymentProcessor` or `Order#checkout`) must accept **any** `PaymentMethod` implementation without recompilation when a new rail is added—validated by design review and/or tests.
+- Create or complete a `PaymentProcessor` class that has a method accepting `PaymentMethod` and `amount`.
+- `PaymentProcessor` or `Order#checkout` must accept **any** `PaymentMethod` implementation without recompilation when a new rail is added.
+- To check your design, imagine adding `BuyNowPayLaterPayment`. You should need a new class plus demo wiring, not changes to the order total calculation.
 
 **Demonstration**
 
-- The default application flow selects a concrete payment type and completes checkout end-to-end.
+- In `PayNestApplication`, build the Capstone 1 order first.
+- Choose one concrete payment type, for example `new CardPayment()`.
+- Pass that object into the checkout flow through the `PaymentMethod` interface type.
+- Run the application and confirm the output shows the order summary, payment rail, payment amount, and order completion.
+
+## Suggested Implementation Order for Beginners
+
+1. Confirm Capstone 1 can create an order and calculate the correct total.
+2. Create the `PaymentMethod` interface with `processPayment(double amount)` and `getPaymentType()`.
+3. Create `CardPayment`, implement `PaymentMethod`, and return a clear payment type label.
+4. Repeat the same pattern for `EftPayment` and `WalletPayment`.
+5. Create or update `PaymentProcessor` so it works with the interface, not with one concrete class.
+6. Add checkout code that calculates the order total once and sends that total to the chosen payment method.
+7. Update `PayNestApplication` to demonstrate the full flow with one payment method.
+8. Add or update tests to run checkout with at least two different `PaymentMethod` implementations.
 
 ## Technical Constraints
 
