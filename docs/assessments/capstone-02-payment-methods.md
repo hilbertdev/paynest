@@ -43,6 +43,105 @@ This capstone starts from the order classes in Capstone 1. If you are new to Jav
 - Pass that object into the checkout flow through the `PaymentMethod` interface type.
 - Run the application and confirm the output shows the order summary, payment rail, payment amount, and order completion.
 
+## Starter Code / Example Scaffold
+
+If you are starting from the Capstone 1 order classes, use the example below as a small scaffold for Capstone 2. The package names match the PayNest repository layout. You may copy these snippets into the listed files, then extend them with your own validation, tests, and console messages.
+
+**1. Define the payment contract**
+
+```java
+// src/main/java/com/paynestsystem/payment/PaymentMethod.java
+package com.paynestsystem.payment;
+
+public interface PaymentMethod {
+    boolean processPayment(double amount);
+
+    String getPaymentType();
+}
+```
+
+**2. Implement one rail first, then repeat the pattern**
+
+```java
+// src/main/java/com/paynestsystem/payment/CardPayment.java
+package com.paynestsystem.payment;
+
+public class CardPayment implements PaymentMethod {
+    @Override
+    public boolean processPayment(double amount) {
+        System.out.println("Processing card payment for R" + String.format("%.0f", amount));
+        return true; // Simulated payment for the capstone demo.
+    }
+
+    @Override
+    public String getPaymentType() {
+        return "CARD";
+    }
+}
+```
+
+Create `EftPayment` and `WalletPayment` in the same package by implementing the same two methods. Each class should own its rail-specific label and message; the checkout flow should not use `if` or `switch` statements to decide how a rail works.
+
+**3. Keep checkout code pointed at the interface**
+
+```java
+// src/main/java/com/paynestsystem/payment/PaymentProcessor.java
+package com.paynestsystem.payment;
+
+public class PaymentProcessor {
+    public boolean processPayment(PaymentMethod method, double amount) {
+        boolean success = method.processPayment(amount);
+
+        if (success) {
+            System.out.println("Payment successful via " + method.getPaymentType());
+            System.out.println("Amount: R" + String.format("%.0f", amount));
+        } else {
+            System.out.println("Payment failed via " + method.getPaymentType());
+        }
+
+        return success;
+    }
+}
+```
+
+Your `Order#checkout(PaymentMethod paymentMethod)` method can calculate the order total once and pass it to `PaymentProcessor`. The important design point is that `Order` accepts the `PaymentMethod` interface, not `CardPayment`, `EftPayment`, or `WalletPayment` directly.
+
+**4. Wire the example in the application**
+
+```java
+PaymentMethod paymentMethod = new CardPayment();
+order.checkout(paymentMethod);
+```
+
+To demonstrate polymorphism, change only the construction line to `new EftPayment()` or `new WalletPayment()`. The rest of the checkout code should stay the same.
+
+**5. Example test shape**
+
+```java
+// src/test/java/com/paynestsystem/payment/PaymentMethodTest.java
+package com.paynestsystem.payment;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+class PaymentMethodTest {
+    @Test
+    void checkoutCanUseDifferentPaymentMethods() {
+        PaymentMethod card = new CardPayment();
+        PaymentMethod wallet = new WalletPayment();
+
+        assertTrue(card.processPayment(12400));
+        assertTrue(wallet.processPayment(12400));
+        assertEquals("CARD", card.getPaymentType());
+        assertEquals("WALLET", wallet.getPaymentType());
+    }
+}
+```
+
+This test is intentionally small. Stronger submissions also verify that the amount passed to payment equals `order.calculateTotal()`.
+
 ## Suggested Implementation Order for Beginners
 
 1. Confirm Capstone 1 can create an order and calculate the correct total.
