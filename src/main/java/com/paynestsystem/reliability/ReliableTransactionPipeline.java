@@ -22,11 +22,14 @@ import java.util.UUID;
  */
 public class ReliableTransactionPipeline {
 
+    private static final int IDEMPOTENCY_LOCK_STRIPES = 64;
+
     private final IdempotencyRegistry idempotencyRegistry;
     private final TransactionRecordStore transactionRecordStore;
     private final RoutingEngine routingEngine;
     private final RiskEvaluator riskEvaluator;
     private final DecisionLogger decisionLogger;
+    private final Object[] idempotencyLocks;
 
     public ReliableTransactionPipeline(
             IdempotencyRegistry idempotencyRegistry,
@@ -39,6 +42,7 @@ public class ReliableTransactionPipeline {
         this.routingEngine = Objects.requireNonNull(routingEngine);
         this.riskEvaluator = Objects.requireNonNull(riskEvaluator);
         this.decisionLogger = Objects.requireNonNull(decisionLogger);
+        this.idempotencyLocks = createIdempotencyLocks();
     }
 
     /**
@@ -49,13 +53,20 @@ public class ReliableTransactionPipeline {
         Objects.requireNonNull(transaction);
         Objects.requireNonNull(idempotencyKey);
 
+        synchronized (lockFor(idempotencyKey)) {
+            return processLocked(transaction, idempotencyKey);
+        }
+    }
+
+    private PipelineResult processLocked(Transaction transaction, String idempotencyKey) {
         Optional<String> existingId = idempotencyRegistry.lookup(idempotencyKey);
         if (existingId.isPresent()) {
             Optional<TransactionRecord> prior = transactionRecordStore.findById(existingId.get());
             if (prior.isPresent()) {
                 return new PipelineResult(prior.get(), true);
             }
-            // TODO: registry/store mismatch — repair or alert operations
+            throw new IllegalStateException("Idempotency key " + idempotencyKey
+                    + " is bound to missing transaction record " + existingId.get());
         }
 
         Instant now = Instant.now();
@@ -83,5 +94,17 @@ public class ReliableTransactionPipeline {
         transactionRecordStore.save(record);
 
         return new PipelineResult(record, false);
+    }
+
+    private static Object[] createIdempotencyLocks() {
+        Object[] locks = new Object[IDEMPOTENCY_LOCK_STRIPES];
+        for (int i = 0; i < locks.length; i++) {
+            locks[i] = new Object();
+        }
+        return locks;
+    }
+
+    private Object lockFor(String idempotencyKey) {
+        return idempotencyLocks[Math.floorMod(idempotencyKey.hashCode(), idempotencyLocks.length)];
     }
 }
