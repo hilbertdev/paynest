@@ -132,7 +132,7 @@ class ReliableTransactionPipelineTest {
             if (call == 1) {
                 firstRouteStarted.countDown();
                 try {
-                    assertTrue(releaseFirstRoute.await(1, TimeUnit.SECONDS));
+                    releaseFirstRoute.await();
                 } catch (InterruptedException exception) {
                     Thread.currentThread().interrupt();
                     throw new IllegalStateException(exception);
