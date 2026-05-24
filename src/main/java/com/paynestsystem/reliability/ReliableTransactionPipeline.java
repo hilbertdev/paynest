@@ -45,7 +45,7 @@ public class ReliableTransactionPipeline {
      * Processes a transaction once per idempotency key; repeats return the stored record (at-least-once delivery
      * simplified to duplicate detection).
      */
-    public PipelineResult process(Transaction transaction, String idempotencyKey) {
+    public synchronized PipelineResult process(Transaction transaction, String idempotencyKey) {
         Objects.requireNonNull(transaction);
         Objects.requireNonNull(idempotencyKey);
 
@@ -55,7 +55,9 @@ public class ReliableTransactionPipeline {
             if (prior.isPresent()) {
                 return new PipelineResult(prior.get(), true);
             }
-            // TODO: registry/store mismatch — repair or alert operations
+            throw new IllegalStateException(
+                    "Idempotency key " + idempotencyKey
+                            + " is bound to missing transaction record " + existingId.get());
         }
 
         Instant now = Instant.now();
