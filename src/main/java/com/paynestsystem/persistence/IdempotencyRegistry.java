@@ -14,6 +14,7 @@ public interface IdempotencyRegistry {
 
     /**
      * Associates a key with a record after the record is created (call once per successful new attempt).
+     * Implementations should reject attempts to rebind a key to a different record.
      */
     void bind(String idempotencyKey, String recordId);
 }

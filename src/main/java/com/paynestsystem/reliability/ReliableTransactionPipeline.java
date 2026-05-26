@@ -22,6 +22,9 @@ import java.util.UUID;
  */
 public class ReliableTransactionPipeline {
 
+    private static final int IDEMPOTENCY_LOCK_STRIPES = 64;
+    private static final Object[] IDEMPOTENCY_LOCKS = createIdempotencyLocks();
+
     private final IdempotencyRegistry idempotencyRegistry;
     private final TransactionRecordStore transactionRecordStore;
     private final RoutingEngine routingEngine;
@@ -49,13 +52,21 @@ public class ReliableTransactionPipeline {
         Objects.requireNonNull(transaction);
         Objects.requireNonNull(idempotencyKey);
 
+        synchronized (lockFor(idempotencyKey)) {
+            return processLocked(transaction, idempotencyKey);
+        }
+    }
+
+    private PipelineResult processLocked(Transaction transaction, String idempotencyKey) {
         Optional<String> existingId = idempotencyRegistry.lookup(idempotencyKey);
         if (existingId.isPresent()) {
             Optional<TransactionRecord> prior = transactionRecordStore.findById(existingId.get());
             if (prior.isPresent()) {
                 return new PipelineResult(prior.get(), true);
             }
-            // TODO: registry/store mismatch — repair or alert operations
+            throw new IllegalStateException(
+                    "Idempotency key " + idempotencyKey
+                            + " is bound to missing transaction record " + existingId.get());
         }
 
         Instant now = Instant.now();
@@ -83,5 +94,17 @@ public class ReliableTransactionPipeline {
         transactionRecordStore.save(record);
 
         return new PipelineResult(record, false);
+    }
+
+    private static Object[] createIdempotencyLocks() {
+        Object[] locks = new Object[IDEMPOTENCY_LOCK_STRIPES];
+        for (int i = 0; i < locks.length; i++) {
+            locks[i] = new Object();
+        }
+        return locks;
+    }
+
+    private static Object lockFor(String idempotencyKey) {
+        return IDEMPOTENCY_LOCKS[Math.floorMod(idempotencyKey.hashCode(), IDEMPOTENCY_LOCKS.length)];
     }
 }
