@@ -15,6 +15,8 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Orchestrates idempotency, routing, risk, and persistence (Capstone 4 skeleton — students complete retries,
@@ -27,6 +29,7 @@ public class ReliableTransactionPipeline {
     private final RoutingEngine routingEngine;
     private final RiskEvaluator riskEvaluator;
     private final DecisionLogger decisionLogger;
+    private final ConcurrentMap<String, Object> idempotencyLocks = new ConcurrentHashMap<>();
 
     public ReliableTransactionPipeline(
             IdempotencyRegistry idempotencyRegistry,
@@ -49,13 +52,28 @@ public class ReliableTransactionPipeline {
         Objects.requireNonNull(transaction);
         Objects.requireNonNull(idempotencyKey);
 
+        Object lock = idempotencyLocks.computeIfAbsent(idempotencyKey, key -> new Object());
+        synchronized (lock) {
+            try {
+                return processLocked(transaction, idempotencyKey);
+            } finally {
+                idempotencyLocks.remove(idempotencyKey, lock);
+            }
+        }
+    }
+
+    private PipelineResult processLocked(Transaction transaction, String idempotencyKey) {
         Optional<String> existingId = idempotencyRegistry.lookup(idempotencyKey);
         if (existingId.isPresent()) {
             Optional<TransactionRecord> prior = transactionRecordStore.findById(existingId.get());
             if (prior.isPresent()) {
-                return new PipelineResult(prior.get(), true);
+                TransactionRecord record = prior.get();
+                if (record.getStatus() == TransactionStatus.PENDING) {
+                    throw new IllegalStateException("Idempotency key is bound to an incomplete transaction record");
+                }
+                return new PipelineResult(record, true);
             }
-            // TODO: registry/store mismatch — repair or alert operations
+            throw new IllegalStateException("Idempotency key is bound to a missing transaction record");
         }
 
         Instant now = Instant.now();
@@ -70,17 +88,23 @@ public class ReliableTransactionPipeline {
         transactionRecordStore.save(record);
         idempotencyRegistry.bind(idempotencyKey, id);
 
-        // TODO: transactional boundary between store + registry for production systems
-        RouteDecision decision = routingEngine.route(transaction);
-        decisionLogger.log(decision);
+        try {
+            // TODO: transactional boundary between store + registry for production systems
+            RouteDecision decision = routingEngine.route(transaction);
+            decisionLogger.log(decision);
 
-        RiskLevel risk = riskEvaluator.evaluate(transaction);
-        record.setAssessedRisk(risk);
-        record.setRoutingSummary(decision.getReason());
+            RiskLevel risk = riskEvaluator.evaluate(transaction);
+            record.setAssessedRisk(risk);
+            record.setRoutingSummary(decision.getReason());
 
-        // TODO: invoke PaymentProvider.process when routing selects a provider; map failures to FAILED + retry policy
-        record.setStatus(TransactionStatus.ROUTED);
-        transactionRecordStore.save(record);
+            // TODO: invoke PaymentProvider.process when routing selects a provider; map failures to FAILED + retry policy
+            record.setStatus(TransactionStatus.ROUTED);
+            transactionRecordStore.save(record);
+        } catch (RuntimeException ex) {
+            record.setStatus(TransactionStatus.FAILED);
+            transactionRecordStore.save(record);
+            throw ex;
+        }
 
         return new PipelineResult(record, false);
     }
