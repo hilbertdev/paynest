@@ -18,6 +18,9 @@ public class InMemoryIdempotencyRegistry implements IdempotencyRegistry {
 
     @Override
     public void bind(String idempotencyKey, String recordId) {
-        keyToRecordId.put(idempotencyKey, recordId);
+        String existingRecordId = keyToRecordId.putIfAbsent(idempotencyKey, recordId);
+        if (existingRecordId != null && !existingRecordId.equals(recordId)) {
+            throw new IllegalStateException("Idempotency key is already bound to a different record");
+        }
     }
 }
