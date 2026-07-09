@@ -81,17 +81,41 @@ Capstone 2 extends the codebase with a payment system using interfaces and polym
 
 Students learn: interfaces, inheritance, polymorphism, and dependency design.
 
+## Capstone 3 Description
+
+**Payment Orchestration**
+
+Capstone 3 introduces an orchestration layer that intelligently routes payments to the best provider based on multiple criteria:
+
+- **Region:** `Region` enum represents geographic regions (ZA, EU, US, UK, APAC) where customers pay from
+- **Payment Provider:** `PaymentProvider` models a provider with availability, latency, supported regions, fee structure, and amount thresholds
+- **Fee Calculator:** `FeeCalculator` computes the fee and total charge for a given provider and amount
+- **Payment Orchestrator:** `PaymentOrchestrator` selects the best provider by filtering on payment type, region, availability, and amount range, then choosing the lowest-latency candidate
+- **Customer Update:** `Customer` now includes a `Region` field for orchestration-aware routing
+
+### Orchestration Routing Rules
+
+1. **Payment type:** Provider must support the requested payment type (CARD, EFT, WALLET)
+2. **Region:** Provider must operate in the customer's region
+3. **Availability:** Only available providers are considered
+4. **Amount thresholds:** Payment amount must fall within the provider's accepted range (high-value payments route to premium providers)
+5. **Latency:** Among eligible providers, the one with the lowest latency is selected
+
+Students learn: orchestration patterns, multi-criteria decision making, fee calculation, and routing logic.
+
 ## Learning Objectives
 
 - **Capstone 1:** Classes, objects, constructors, encapsulation, collections (`List`), basic business logic
 - **Capstone 2:** Interfaces, inheritance, polymorphism, dependency design, basic architecture
+- **Capstone 3:** Orchestration patterns, multi-criteria routing, fee calculation, enums, filtering and selection logic
 
 ## Project Structure
 
 ```
 src/main/java/com/paynestsystem/
-├── domain/      # Core business objects (Product, Customer, OrderItem, Order)
-├── service/     # Business logic (OrderService)
-├── payment/     # Payment implementations (PaymentMethod, CardPayment, EftPayment, WalletPayment, PaymentProcessor)
-└── app/         # CLI application entry point (PayNestApplication)
+├── domain/           # Core business objects (Product, Customer, OrderItem, Order)
+├── service/          # Business logic (OrderService)
+├── payment/          # Payment implementations (PaymentMethod, CardPayment, EftPayment, WalletPayment, PaymentProcessor)
+├── orchestration/    # Payment orchestration (Region, PaymentProvider, FeeCalculator, PaymentOrchestrator)
+└── app/              # CLI application entry point (PayNestApplication)
 ```
