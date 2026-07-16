@@ -1,0 +1,74 @@
+<mxfile host="app.diagrams.net" modified="2026-07-14T17:00:00.000Z" agent="PayNest" version="22.1.0" type="device">
+  <diagram id="paynest-erd" name="PayNest ERD">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title / disclaimer -->
+        <mxCell id="title" value="&lt;b&gt;PayNest ERD — visualisation only&lt;/b&gt;&lt;br&gt;Not required for writing migrations (Step 2). Write SQL from Java domain classes." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="720" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="&lt;b&gt;Legend (beginner)&lt;/b&gt;&lt;br&gt;PK = Primary Key (identifies one row)&lt;br&gt;FK = Foreign Key (points to another table)&lt;br&gt;UQ = Unique (no duplicates)&lt;br&gt;Line end with crow&#39;s foot = &quot;many&quot;&lt;br&gt;Line end with single bar = &quot;one&quot;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="20" width="280" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Commerce swimlane -->
+        <mxCell id="commerce-group" value="Commerce (Capstone 1) — in-memory today; shown for reading practice" style="swimlane;startSize=28;fillColor=#E8F5E9;strokeColor=#66BB6A;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="700" height="520" as="geometry" />
+        </mxCell>
+
+        <mxCell id="customers" value="&lt;b&gt;customers&lt;/b&gt;&lt;hr&gt;PK id : INT&lt;br&gt;name : VARCHAR&lt;br&gt;email : VARCHAR&lt;br&gt;&lt;i&gt;← Customer.java&lt;/i&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#2E7D32;spacingLeft=4;" vertex="1" parent="commerce-group">
+          <mxGeometry x="40" y="50" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="products" value="&lt;b&gt;products&lt;/b&gt;&lt;hr&gt;PK id : INT&lt;br&gt;name : VARCHAR&lt;br&gt;price : DOUBLE&lt;br&gt;&lt;i&gt;← Product.java&lt;/i&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#2E7D32;spacingLeft=4;" vertex="1" parent="commerce-group">
+          <mxGeometry x="460" y="50" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="orders" value="&lt;b&gt;orders&lt;/b&gt;&lt;hr&gt;PK id : INT&lt;br&gt;FK customer_id : INT&lt;br&gt;&lt;i&gt;← Order.java&lt;/i&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#2E7D32;spacingLeft=4;" vertex="1" parent="commerce-group">
+          <mxGeometry x="40" y="220" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="order_items" value="&lt;b&gt;order_items&lt;/b&gt;&lt;hr&gt;PK order_id : INT&lt;br&gt;PK product_id : INT&lt;br&gt;quantity : INT&lt;br&gt;&lt;i&gt;← OrderItem.java&lt;/i&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#2E7D32;spacingLeft=4;" vertex="1" parent="commerce-group">
+          <mxGeometry x="250" y="380" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Commerce relationships -->
+        <mxCell id="e-cust-ord" style="endArrow=ERmany;startArrow=ERone;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#2E7D32;" edge="1" parent="commerce-group" source="customers" target="orders">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ord-items" value="1:*" style="endArrow=ERmany;startArrow=ERone;html=1;rounded=0;strokeColor=#2E7D32;fontSize=10;" edge="1" parent="commerce-group" source="orders" target="order_items">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-prod-items" value="1:*" style="endArrow=ERmany;startArrow=ERone;html=1;rounded=0;strokeColor=#2E7D32;fontSize=10;" edge="1" parent="commerce-group" source="products" target="order_items">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Payments swimlane -->
+        <mxCell id="payments-group" value="Payments (Capstone 4–5) — what Capstone 4 migrates to H2" style="swimlane;startSize=28;fillColor=#E3F2FD;strokeColor=#42A5F5;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="780" y="180" width="680" height="520" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transaction_records" value="&lt;b&gt;transaction_records&lt;/b&gt;&lt;hr&gt;PK id : VARCHAR&lt;br&gt;UQ idempotency_key : VARCHAR&lt;br&gt;amount : DOUBLE&lt;br&gt;bank : VARCHAR&lt;br&gt;transaction_timestamp : TIMESTAMP&lt;br&gt;status : VARCHAR&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;updated_at : TIMESTAMP&lt;br&gt;routing_summary : VARCHAR&lt;br&gt;assessed_risk : VARCHAR&lt;br&gt;monitoring_flag : BOOLEAN&lt;br&gt;ai_assessment_summary : CLOB&lt;br&gt;&lt;i&gt;← TransactionRecord + Transaction&lt;/i&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#1565C0;spacingLeft=4;" vertex="1" parent="payments-group">
+          <mxGeometry x="40" y="50" width="280" height="250" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ai_decision_records" value="&lt;b&gt;ai_decision_records&lt;/b&gt;&lt;hr&gt;PK id : BIGINT&lt;br&gt;FK transaction_record_id&lt;br&gt;created_at : TIMESTAMP&lt;br&gt;raw_ai_payload : CLOB&lt;br&gt;resolved_risk_level : VARCHAR&lt;br&gt;used_fallback : BOOLEAN&lt;br&gt;&lt;i&gt;← AiDecisionRecord.java&lt;/i&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=11;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#FFFFFF;strokeColor=#1565C0;spacingLeft=4;" vertex="1" parent="payments-group">
+          <mxGeometry x="380" y="90" width="260" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="enum-note" value="&lt;b&gt;Enums as text&lt;/b&gt;&lt;br&gt;status: PENDING | ROUTED |&lt;br&gt;COMPLETED | FAILED&lt;br&gt;assessed_risk / resolved_risk:&lt;br&gt;LOW | MEDIUM | HIGH" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fillColor=#FFF8E1;strokeColor=#FFB300;fontSize=10;" vertex="1" parent="payments-group">
+          <mxGeometry x="40" y="340" width="280" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-tx-ai" value="1:*" style="endArrow=ERmany;startArrow=ERone;html=1;rounded=0;strokeColor=#1565C0;fontSize=10;" edge="1" parent="payments-group" source="transaction_records" target="ai_decision_records">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
