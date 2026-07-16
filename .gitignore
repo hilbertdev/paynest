@@ -1,3 +1,6 @@
+# Local tooling venv (spreadsheet / rubric scripts)
+.venv-xlsx/
+
 # Maven build output
 target/
 

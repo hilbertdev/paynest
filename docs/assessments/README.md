@@ -21,3 +21,12 @@ This folder contains the **authoritative project briefs** for the five PayNest c
 - **Capstone 5** needs a local [Ollama](https://ollama.com/) install for full integration; offline degradation must still work.
 
 If instructions in this folder conflict with coursework slides, **follow your instructor** unless they defer to these briefs.
+
+## Live sessions
+
+- **[2026-07-16 — ERD + code-first migrations](../live-sessions/20260716-ERDMigrations/README.md)** — preparatory teaching pack for Capstone 4: map domain classes to tables, write DDL, apply to H2. The ERD is optional visualisation; migrations are authored from Java (not from draw.io).
+
+## Rubrics (grading grids)
+
+- **[Excel workbook](../Capstones%20(2).xlsx)** — one sheet per capstone with the same categories and level descriptors as each brief’s rubric section.
+- **[CSV mirrors in `docs/capestone-rubrics/`](../capestone-rubrics/README.md)** — same criteria for import into LMS tools or diff-friendly review.

@@ -74,6 +74,10 @@ Learner-facing **project briefs**, **deliverables**, and **rubrics** live under 
 | 4 | [Durable payment attempts and operations-grade reliability](docs/assessments/capstone-04-persistence-reliability.md) |
 | 5 | [Near-real-time risk monitoring with local LLM assistance](docs/assessments/capstone-05-agentic-monitoring.md) |
 
+**Grading grids:** [Excel workbook](docs/Capstones%20(2).xlsx) (one sheet per capstone) and [CSV mirrors](docs/capestone-rubrics/README.md) aligned with each brief’s rubric table.
+
+**Live sessions:** [ERD + code-first migrations (2026-07-16)](docs/live-sessions/20260716-ERDMigrations/README.md) — beginner walkthrough from domain classes to H2 DDL (Capstone 4 prep). The draw.io ERD is visualisation only; migrations are written from Java classes.
+
 **Scaffolding note:** Capstones 3–5 ship with interfaces, skeleton implementations, and `TODO`s in code—complete behaviour to the brief, not only the stubs.
 
 ### Architecture (capstones 3–5)

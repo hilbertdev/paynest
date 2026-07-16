@@ -23,4 +23,9 @@ public class InMemoryIdempotencyRegistry implements IdempotencyRegistry {
             throw new IllegalStateException("Idempotency key is already bound to a different record");
         }
     }
+
+    /** For demos and tests — not part of the production registry contract. */
+    public int count() {
+        return keyToRecordId.size();
+    }
 }
