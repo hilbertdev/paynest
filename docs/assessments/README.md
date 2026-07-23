@@ -25,6 +25,7 @@ If instructions in this folder conflict with coursework slides, **follow your in
 ## Live sessions
 
 - **[2026-07-16 — ERD + code-first migrations](../live-sessions/20260716-ERDMigrations/README.md)** — preparatory teaching pack for Capstone 4: map domain classes to tables, write DDL, apply to H2. The ERD is optional visualisation; migrations are authored from Java (not from draw.io).
+- **[2026-07-23 — JDBC with H2](../live-sessions/20260723-DatabaseConnection/README.md)** — beginner JDBC: connect, create table, insert, query; DBeaver + class slides; PostgreSQL + Docker alternative.
 
 ## Rubrics (grading grids)
 
