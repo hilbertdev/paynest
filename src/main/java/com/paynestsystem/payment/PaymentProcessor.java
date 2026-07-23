@@ -1,5 +1,10 @@
 package com.paynestsystem.payment;
 
+import com.paynestsystem.common.CurrencyFormatter;
+
+import static com.paynestsystem.common.ValidationUtils.requireNonNegative;
+import static com.paynestsystem.common.ValidationUtils.requireNonNull;
+
 /**
  * Processes payments using any PaymentMethod implementation.
  * Accepts a payment method and amount, then prints the result.
@@ -12,14 +17,18 @@ public class PaymentProcessor {
      * @param method the payment method to use
      * @param amount the amount to charge
      */
-    public void processPayment(PaymentMethod method, double amount) {
+    public boolean processPayment(PaymentMethod method, double amount) {
+        requireNonNull(method, "method");
+        requireNonNegative(amount, "amount");
+
         boolean success = method.processPayment(amount);
         if (success) {
             System.out.println("Payment successful via " + method.getPaymentType());
-            System.out.println("Amount: R" + String.format("%.0f", amount));
+            System.out.println("Amount: " + CurrencyFormatter.formatZar(amount));
         } else {
             // Students can extend here: handle payment failure
             System.out.println("Payment failed via " + method.getPaymentType());
         }
+        return success;
     }
 }

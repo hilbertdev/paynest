@@ -1,5 +1,8 @@
 package com.paynestsystem.domain;
 
+import static com.paynestsystem.common.ValidationUtils.requireNonBlank;
+import static com.paynestsystem.common.ValidationUtils.requireNonNegative;
+
 /**
  * Represents a product that can be sold on the PayNest platform.
  * Each product has an id, name, and price.
@@ -19,8 +22,8 @@ public class Product {
      */
     public Product(int id, String name, double price) {
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = requireNonBlank(name, "name");
+        this.price = requireNonNegative(price, "price");
     }
 
     public int getId() {
