@@ -5,13 +5,17 @@ import com.paynestsystem.domain.Order;
 import com.paynestsystem.domain.Product;
 
 /**
- * Handles business logic for creating and managing orders.
- * Provides methods to create orders, add products, and calculate totals.
+ * Thin business API over the order domain for Capstone 1.
+ * <p>
+ * Flow: {@link #createOrder} → {@link #addProductsToOrder} → {@link #calculateTotals}
+ * (or {@link Order#printSummary()}). Validation of quantity and product lives in
+ * the domain ({@code OrderItem} / {@code Order}), not here — one place owns the
+ * rules so callers cannot bypass them by using {@code Order} directly.
  */
 public class OrderService {
 
     /**
-     * Creates a new order for the given customer.
+     * Creates a new empty order for the given customer.
      *
      * @param orderId  unique identifier for the order
      * @param customer the customer placing the order
@@ -22,19 +26,19 @@ public class OrderService {
     }
 
     /**
-     * Adds a product to an existing order.
+     * Adds a product line to an existing order.
+     * Delegates to {@link Order#addItem}; domain rejects invalid quantities.
      *
      * @param order    the order to add to
      * @param product  the product to add
-     * @param quantity the number of units
+     * @param quantity the number of units (must be &gt; 0)
      */
     public void addProductsToOrder(Order order, Product product, int quantity) {
-        // Students can extend here: add inventory checks, stock validation
         order.addItem(product, quantity);
     }
 
     /**
-     * Calculates the total cost of all items in the order.
+     * Returns the order grand total via the same domain method used by printSummary.
      *
      * @param order the order to calculate
      * @return the total amount
