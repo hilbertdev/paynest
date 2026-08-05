@@ -6,7 +6,7 @@ This folder contains the **authoritative project briefs** for the five PayNest c
 
 | Order | Brief | You are building |
 |-------|--------|------------------|
-| 1 | [Capstone 1: Merchant order desk](capstone-01-commerce-engine.md) | A small commercial **order and pricing engine** for SME merchants: catalogue, customers, line items, printable order summary. |
+| 1 | [Capstone 1: Merchant order desk](capstone-01-commerce-engine.md) ([model solution](capstone-01-model-solution.md)) | A small commercial **order and pricing engine** for SME merchants: catalogue, customers, line items, printable order summary. |
 | 2 | [Capstone 2: Unified checkout](capstone-02-payment-methods.md) | A **polymorphic payment layer** so checkout does not care which rail (card, EFT, wallet) is used. |
 | 3 | [Capstone 3: Smart rails and risk](capstone-03-routing-risk.md) | **Provider routing** and **risk scoring** for bank-scoped payment attempts (`Transaction`), with auditable decisions. |
 | 4 | [Capstone 4: Durable money path](capstone-04-persistence-reliability.md) | **Idempotent pipelines**, **durable state**, and **operational reports** on top of the routing and risk abstractions. |
@@ -25,6 +25,7 @@ If instructions in this folder conflict with coursework slides, **follow your in
 ## Live sessions
 
 - **[2026-07-16 — ERD + code-first migrations](../live-sessions/20260716-ERDMigrations/README.md)** — preparatory teaching pack for Capstone 4: map domain classes to tables, write DDL, apply to H2. The ERD is optional visualisation; migrations are authored from Java (not from draw.io).
+- **[2026-07-23 — JDBC with H2](../live-sessions/20260723-DatabaseConnection/README.md)** — beginner JDBC: connect, create table, insert, query; DBeaver + class slides; PostgreSQL + Docker alternative.
 
 ## Rubrics (grading grids)
 

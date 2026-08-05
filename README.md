@@ -68,7 +68,7 @@ Learner-facing **project briefs**, **deliverables**, and **rubrics** live under 
 
 | Capstone | Brief |
 |----------|--------|
-| 1 | [Merchant order desk and catalogue engine](docs/assessments/capstone-01-commerce-engine.md) |
+| 1 | [Merchant order desk and catalogue engine](docs/assessments/capstone-01-commerce-engine.md) ([model solution](docs/assessments/capstone-01-model-solution.md)) |
 | 2 | [Unified checkout across payment rails](docs/assessments/capstone-02-payment-methods.md) |
 | 3 | [Smart rails selection and transaction risk](docs/assessments/capstone-03-routing-risk.md) |
 | 4 | [Durable payment attempts and operations-grade reliability](docs/assessments/capstone-04-persistence-reliability.md) |
@@ -76,7 +76,9 @@ Learner-facing **project briefs**, **deliverables**, and **rubrics** live under 
 
 **Grading grids:** [Excel workbook](docs/Capstones%20(2).xlsx) (one sheet per capstone) and [CSV mirrors](docs/capestone-rubrics/README.md) aligned with each brief’s rubric table.
 
-**Live sessions:** [ERD + code-first migrations (2026-07-16)](docs/live-sessions/20260716-ERDMigrations/README.md) — beginner walkthrough from domain classes to H2 DDL (Capstone 4 prep). The draw.io ERD is visualisation only; migrations are written from Java classes.
+**Live sessions:**
+- [ERD + code-first migrations (2026-07-16)](docs/live-sessions/20260716-ERDMigrations/README.md) — beginner walkthrough from domain classes to H2 DDL (Capstone 4 prep). The draw.io ERD is visualisation only; migrations are written from Java classes.
+- [JDBC with H2 (2026-07-23)](docs/live-sessions/20260723-DatabaseConnection/README.md) — connect, create a table, insert, and query; includes DBeaver steps, class slides, and a PostgreSQL + Docker alternative (`PostgresJdbcDemo`).
 
 **Scaffolding note:** Capstones 3–5 ship with interfaces, skeleton implementations, and `TODO`s in code—complete behaviour to the brief, not only the stubs.
 
@@ -140,5 +142,5 @@ src/main/java/com/paynestsystem/
 ├── reporting/        # ReportGenerator, OperationsReport, StubReportGenerator
 ├── ollama/           # OllamaConfig, OllamaClient, HttpOllamaClient, UnavailableOllamaClient
 ├── monitoring/       # RiskMonitoringService
-└── app/              # PayNestApplication (Capstones 1–2 demo)
+└── app/              # PayNestApplication (commerce demo + beginner JDBC lesson)
 ```
