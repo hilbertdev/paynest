@@ -1,8 +1,11 @@
 package com.paynestsystem.domain;
 
 /**
- * Represents a customer who can place orders on the PayNest platform.
- * Each customer has an id, name, and email address.
+ * Person buying from the merchant.
+ * <p>
+ * Identity lives here (id, name, contact) so an {@link Order} can print a
+ * receipt header without duplicating customer fields on every line item.
+ * Later you can add phone or address without touching order arithmetic.
  */
 public class Customer {
 
@@ -11,11 +14,11 @@ public class Customer {
     private final String email;
 
     /**
-     * Creates a new customer.
+     * Creates a customer.
      *
      * @param id    unique identifier for the customer
-     * @param name  full name of the customer
-     * @param email email address for contact
+     * @param name  full name shown on the order summary
+     * @param email contact email
      */
     public Customer(int id, String name, String email) {
         this.id = id;

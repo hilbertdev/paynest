@@ -31,20 +31,27 @@ public class PayNestApplication {
             "jdbc:h2:file:./data/paynest;AUTO_SERVER=TRUE;TRACE_LEVEL_FILE=3";
 
     public static void main(String[] args) throws Exception {
-        // --- Capstone 1: Core Commerce Engine ---
+        // --- Capstone 1: Merchant order desk / catalogue engine ---
+        // Step 1: Catalogue — at least two products with unit prices in Rand.
         Product laptop = new Product(1, "Laptop", 12000);
         Product mouse = new Product(2, "Mouse", 200);
 
+        // Step 2: Customer identity for the receipt header.
         Customer customer = new Customer(1, "John Smith", "john@example.com");
 
+        // Step 3: Create an empty order through OrderService (thin API over Order).
         OrderService orderService = new OrderService();
         Order order = orderService.createOrder(1, customer);
+
+        // Step 4: Add line items — include one product with quantity greater than 1
+        // so reviewers can manually check: Mouse 200 * 2 = R400; grand total R12400.
         orderService.addProductsToOrder(order, laptop, 1);
         orderService.addProductsToOrder(order, mouse, 2);
 
+        // Step 5: Print summary — customer, each line subtotal, grand total.
         order.printSummary();
 
-        // --- Capstone 2: OOP Payment System ---
+        // --- Capstone 2: OOP Payment System (not required for Capstone 1) ---
         PaymentMethod paymentMethod = new CardPayment();
         order.checkout(paymentMethod);
 

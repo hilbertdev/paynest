@@ -68,7 +68,7 @@ Learner-facing **project briefs**, **deliverables**, and **rubrics** live under 
 
 | Capstone | Brief |
 |----------|--------|
-| 1 | [Merchant order desk and catalogue engine](docs/assessments/capstone-01-commerce-engine.md) |
+| 1 | [Merchant order desk and catalogue engine](docs/assessments/capstone-01-commerce-engine.md) ([model solution](docs/assessments/capstone-01-model-solution.md)) |
 | 2 | [Unified checkout across payment rails](docs/assessments/capstone-02-payment-methods.md) |
 | 3 | [Smart rails selection and transaction risk](docs/assessments/capstone-03-routing-risk.md) |
 | 4 | [Durable payment attempts and operations-grade reliability](docs/assessments/capstone-04-persistence-reliability.md) |

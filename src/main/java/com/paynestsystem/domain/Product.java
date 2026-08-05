@@ -1,21 +1,26 @@
 package com.paynestsystem.domain;
 
 /**
- * Represents a product that can be sold on the PayNest platform.
- * Each product has an id, name, and price.
+ * Catalogue entry for something a merchant can sell.
+ * <p>
+ * Kept separate from {@link Order} / {@link OrderItem} on purpose: you can later
+ * add fields (SKU, category, description) to {@code Product} without rewriting
+ * checkout or total calculation. Orders reference products; they do not own
+ * the catalogue definition.
  */
 public class Product {
 
     private final int id;
     private final String name;
+    /** Unit price in Rand (R). Capstone 1 uses {@code double} like the starter. */
     private final double price;
 
     /**
-     * Creates a new product.
+     * Creates a product in one line, e.g. {@code new Product(1, "Laptop", 12000)}.
      *
      * @param id    unique identifier for the product
-     * @param name  display name of the product
-     * @param price price in the local currency (e.g. Rands)
+     * @param name  display name shown on receipts
+     * @param price unit price in Rand
      */
     public Product(int id, String name, double price) {
         this.id = id;
