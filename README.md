@@ -43,6 +43,14 @@ Alternatively:
 mvn compile exec:java -Dexec.mainClass="com.paynestsystem.app.PayNestApplication"
 ```
 
+### Polymorphism live demo (lecture)
+
+Small self-contained demo of an interface + dynamic dispatch (not the full Capstone 2 flow):
+
+```bash
+mvn -q compile exec:java -Dexec.mainClass="com.paynestsystem.app.PolymorphismLiveDemo"
+```
+
 ### Expected Output
 
 ```
@@ -142,5 +150,5 @@ src/main/java/com/paynestsystem/
 ├── reporting/        # ReportGenerator, OperationsReport, StubReportGenerator
 ├── ollama/           # OllamaConfig, OllamaClient, HttpOllamaClient, UnavailableOllamaClient
 ├── monitoring/       # RiskMonitoringService
-└── app/              # PayNestApplication (commerce demo + beginner JDBC lesson)
+└── app/              # PayNestApplication, PolymorphismLiveDemo, JDBC / durability demos
 ```
