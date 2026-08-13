@@ -27,7 +27,7 @@ The system evolves through five capstones:
 | Actor | Role in the system |
 |-------|-------------------|
 | **Merchant / SME seller** | Creates products, builds orders, demos to customers |
-| **Customer / buyer** | Person linked to an order (`Customer`: id, name, email) |
+| **Customer / buyer** | Person linked to an order (`Customer`: id, name, `Email` VO) |
 | **Junior backend engineer** (you) | Implements capstones in plain Java |
 | **Operations / support** | Replays CLI demos; reads routing and risk logs |
 | **Finance** | Needs durable counts, no double-posting (Capstone 4+) |
@@ -100,6 +100,7 @@ enqueue(Transaction) → worker drain loop
 |------|----------------|---------------|
 | **Merchant** | Actor (implicit) | Not modeled — persona in docs only |
 | **Customer** | Entity | `domain.Customer` |
+| **Email** | **Value Object** | `domain.Email` — teaching example: no id, immutable, equal by address |
 | **Product** | Entity | `domain.Product` |
 | **Order** | **Aggregate root** | `domain.Order` |
 | **Order item / line** | Entity (child) | `domain.OrderItem` |
@@ -242,7 +243,7 @@ enqueue(Transaction) → worker drain loop
 | **Root** | `Order` |
 | **Child entities** | `OrderItem` (each links one `Product` + quantity) |
 | **Referenced entities** | `Customer` (by reference), `Product` (via OrderItem) |
-| **Value objects** | Line subtotal (computed), grand total (computed) |
+| **Value objects** | `Email` (on Customer), line subtotal (computed), grand total (computed) |
 | **Responsibilities** | Collect line items; compute trustworthy total; initiate checkout |
 | **Invariants** | Grand total = sum of line subtotals; quantities should be positive; items list should not be corrupted externally |
 | **Lifecycle** | Created empty → items added → total calculated → optional checkout → completed (console message) |
@@ -274,7 +275,7 @@ enqueue(Transaction) → worker drain loop
 
 | Entity | Owned by | Notes |
 |--------|----------|-------|
-| `Customer` | Referenced by Order | Identity only in Capstone 1 |
+| `Customer` | Referenced by Order | Identity only in Capstone 1; contact is `Email` VO |
 | `Product` | Referenced by OrderItem | Catalogue item |
 | `AiDecisionRecord` | Linked to TransactionRecord | Append-only audit |
 
@@ -284,6 +285,7 @@ enqueue(Transaction) → worker drain loop
 
 ```mermaid
 erDiagram
+    CUSTOMER ||--|| EMAIL : "contact"
     CUSTOMER ||--o{ ORDER : places
     ORDER ||--|{ ORDER_ITEM : contains
     PRODUCT ||--o{ ORDER_ITEM : "sold as"
@@ -312,7 +314,9 @@ erDiagram
     CUSTOMER {
         int id
         string name
-        string email
+    }
+    EMAIL {
+        string value
     }
     PRODUCT {
         int id
@@ -343,6 +347,7 @@ flowchart TB
     subgraph Sales["Sales & Catalogue"]
         Product
         Customer
+        Email
         Order
         OrderItem
     end
@@ -431,7 +436,7 @@ One giant `PaymentService` that knows about laptops, idempotency keys, Ollama, a
 |---|---|
 | **Trigger** | New buyer at order desk |
 | **Actor** | Merchant |
-| **Steps** | 1. Create `Customer` with id, name, email |
+| **Steps** | 1. Create `Email` value object 2. Create `Customer` with id, name, and that email |
 | **Outcome** | Customer can be linked to an order |
 
 ### UC3 — Build order with line items
@@ -521,7 +526,7 @@ One giant `PaymentService` that knows about laptops, idempotency keys, Ollama, a
 
 | Component | Business phrase | Layer | Why it exists |
 |-----------|-----------------|-------|---------------|
-| `Product`, `Customer`, `Order`, `OrderItem` | "What we sell, who buys, what's in the basket" | **Domain** | Core commerce truth |
+| `Product`, `Customer`, `Email`, `Order`, `OrderItem` | "What we sell, who buys, what's in the basket" | **Domain** | Core commerce truth |
 | `Transaction`, `TransactionRecord` | "A payment attempt we must not lose" | **Domain** | Payment processing truth |
 | `OrderService` | "Help me start and fill an order" | **Application** | Thin orchestration; no business rules of its own |
 | `PaymentProcessor` | "Charge this amount using that rail" | **Domain / Application** | Coordinates payment strategy (debate: could be application service) |
@@ -597,6 +602,7 @@ flowchart TB
 
 | Noun | Class | Why? |
 |------|-------|------|
+| Email | `Email` | Contact address; no identity; two equal addresses are interchangeable |
 | Transaction (routing input) | `Transaction` | Snapshot of amount/bank/time; no own lifecycle |
 | Route decision | `RouteDecision` | Immutable fact: who, why, which rules |
 | Risk level | `RiskLevel` enum | Fixed vocabulary |
@@ -758,7 +764,7 @@ flowchart LR
 | PayNest (Capstone One) | Your orchestration platform |
 |------------------------|----------------------------|
 | Merchant (implicit actor) | **Merchant** (entity / aggregate) |
-| Customer | **Customer** (entity) |
+| Customer + Email VO | **Customer** (entity) + contact VOs |
 | Product | **Payment product / rail config** (entity) |
 | Order | **Payment intent** or **Payment** (aggregate) |
 | OrderItem | **Payment line / fee component** (child entity) |
@@ -839,13 +845,15 @@ flowchart LR
 2. Write nouns on the board as students call them out: **product, customer, order, line, total, payment**.
 3. Ask: *"Which of these need an ID that stays the same over time?"* → Customer, Product, Order.
 4. Ask: *"Which are just calculated?"* → line subtotal, grand total.
+5. Ask: *"Is email an entity or a value object?"* → Value object: no id; two identical addresses are interchangeable.
 
 ### Part 2 — Map nouns to Capstone 1 code (15 min)
 
-1. Open `domain/Product.java`, `Customer.java`, `Order.java`, `OrderItem.java`.
-2. Trace `PayNestApplication`: products → customer → order → `addItem` → `printSummary`.
-3. Run `mvn exec:java` — connect console output to `printSummary`.
-4. **Exercise:** Students name the aggregate root and explain why `OrderItem` is not the root.
+1. Open `domain/Product.java`, `Customer.java`, `Email.java`, `Order.java`, `OrderItem.java`.
+2. Contrast **entity** vs **value object** using `Customer` (has an `id`) and `Email` (no `id`; `john@example.com` == `JOHN@EXAMPLE.COM`).
+3. Trace `PayNestApplication`: products → `new Email(...)` → customer → order → `addItem` → `printSummary`.
+4. Run `mvn exec:java` — connect console output to `printSummary`.
+5. **Exercise:** Students name the aggregate root and explain why `OrderItem` is not the root. Ask: *"Could Email be an entity? When would you give it an id?"*
 
 ### Part 3 — Verbs and methods (10 min)
 

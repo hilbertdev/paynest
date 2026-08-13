@@ -1,7 +1,7 @@
 # Live session: Noun–verb domain analysis (DDD walkthrough)
 
 **Audience:** Java students who have completed or are working through Capstone 1, preparing for later capstones.  
-**Goal:** learn how to read a codebase like an architect — extract business language, spot aggregates, and map nouns/verbs to code.
+**Goal:** learn how to read a codebase like an architect — extract business language, spot aggregates, and map nouns/verbs to code. Use `Email` as the live **value object** example (entity `Customer` *has* an `Email`; the address itself has no id).
 
 ## How to use this folder
 
