@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class OrderTest {
 
-    private final Customer customer = new Customer(1, "John Smith", "john@example.com");
+    private final Customer customer = new Customer(1, "John Smith", new Email("john@example.com"));
     private final Product laptop = new Product(1, "Laptop", 12000);
     private final Product mouse = new Product(2, "Mouse", 200);
 

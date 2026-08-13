@@ -135,7 +135,7 @@ Objectives are summarized here; each assessment brief defines outcomes and gradi
 
 ```
 src/main/java/com/paynestsystem/
-├── domain/           # Product, Customer, OrderItem, Order, Transaction, TransactionStatus,
+├── domain/           # Product, Customer, Email (VO), OrderItem, Order, Transaction, TransactionStatus,
 │                     # TransactionRecord, AiDecisionRecord
 ├── service/          # OrderService
 ├── payment/          # PaymentMethod, implementations, PaymentProcessor

@@ -1,6 +1,7 @@
 package com.paynestsystem.service;
 
 import com.paynestsystem.domain.Customer;
+import com.paynestsystem.domain.Email;
 import com.paynestsystem.domain.Order;
 import com.paynestsystem.domain.Product;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class OrderServiceTest {
 
     private final OrderService orderService = new OrderService();
-    private final Customer customer = new Customer(1, "John Smith", "john@example.com");
+    private final Customer customer = new Customer(1, "John Smith", new Email("john@example.com"));
     private final Product laptop = new Product(1, "Laptop", 12000);
     private final Product mouse = new Product(2, "Mouse", 200);
 

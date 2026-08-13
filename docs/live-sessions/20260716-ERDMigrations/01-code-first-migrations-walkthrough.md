@@ -143,7 +143,7 @@ Open these files in your IDE (paths relative to the repo root):
 | Class | Path | Meaning |
 |-------|------|---------|
 | `Product` | `src/main/java/com/paynestsystem/domain/Product.java` | Something you sell (`id`, `name`, `price`) |
-| `Customer` | `.../domain/Customer.java` | Buyer (`id`, `name`, `email`) |
+| `Customer` | `.../domain/Customer.java` | Buyer (`id`, `name`, `Email` value object) |
 | `Order` | `.../domain/Order.java` | One purchase (`id`, `customer`, list of items) |
 | `OrderItem` | `.../domain/OrderItem.java` | One line: product + quantity |
 

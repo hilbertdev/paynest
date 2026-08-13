@@ -1,6 +1,7 @@
 package com.paynestsystem.app;
 
 import com.paynestsystem.domain.Customer;
+import com.paynestsystem.domain.Email;
 import com.paynestsystem.domain.Order;
 import com.paynestsystem.domain.Product;
 import com.paynestsystem.payment.CardPayment;
@@ -37,7 +38,8 @@ public class PayNestApplication {
         Product mouse = new Product(2, "Mouse", 200);
 
         // Step 2: Customer identity for the receipt header.
-        Customer customer = new Customer(1, "John Smith", "john@example.com");
+        // Email is a value object: no id, immutable, equal by address — not a raw String.
+        Customer customer = new Customer(1, "John Smith", new Email("john@example.com"));
 
         // Step 3: Create an empty order through OrderService (thin API over Order).
         OrderService orderService = new OrderService();
