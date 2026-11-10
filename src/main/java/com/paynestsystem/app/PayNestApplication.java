@@ -41,6 +41,8 @@ public class PayNestApplication {
         // Email is a value object: no id, immutable, equal by address — not a raw String.
         Customer customer = new Customer(1, "John Smith", new Email("john@example.com"));
 
+        var 
+
         // Step 3: Create an empty order through OrderService (thin API over Order).
         OrderService orderService = new OrderService();
         Order order = orderService.createOrder(1, customer);
