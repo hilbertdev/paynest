@@ -2,18 +2,25 @@ package com.paynestsystem.payment;
 
 /**
  * Payment via digital wallet (e.g. PayNest Wallet).
- * Simulates a successful wallet payment (no real processing).
+ * A wallet payment extends the shared PaymentMethod parent and joins two
+ * capability groups: it settles instantly and it can be refunded.
  */
-public class WalletPayment implements PaymentMethod {
+public class WalletPayment extends PaymentMethod implements InstantSettlement, Refundable {
 
     @Override
-    public boolean processPayment(double amount) {
-        // Simulated: always succeeds. Students can extend here: add failure scenarios
+    protected boolean doProcess(double amount) {
+        // Simulated: always succeeds. Students can extend here: keep a balance and reject amounts above it
         return true;
     }
 
     @Override
     public String getPaymentType() {
         return "WALLET";
+    }
+
+    @Override
+    public boolean refund(double amount) {
+        // Simulated: always succeeds. Students can extend here: refund back into the wallet balance
+        return true;
     }
 }

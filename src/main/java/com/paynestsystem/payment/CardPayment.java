@@ -2,12 +2,13 @@ package com.paynestsystem.payment;
 
 /**
  * Payment via credit or debit card.
- * Simulates a successful card payment (no real processing).
+ * A card payment extends the shared PaymentMethod parent and joins two
+ * capability groups: it settles instantly and it can be refunded.
  */
-public class CardPayment implements PaymentMethod {
+public class CardPayment extends PaymentMethod implements InstantSettlement, Refundable {
 
     @Override
-    public boolean processPayment(double amount) {
+    protected boolean doProcess(double amount) {
         // Simulated: always succeeds. Students can extend here: add failure scenarios
         return true;
     }
@@ -15,5 +16,11 @@ public class CardPayment implements PaymentMethod {
     @Override
     public String getPaymentType() {
         return "CARD";
+    }
+
+    @Override
+    public boolean refund(double amount) {
+        // Simulated: always succeeds. Students can extend here: partial refunds, refund windows
+        return true;
     }
 }
