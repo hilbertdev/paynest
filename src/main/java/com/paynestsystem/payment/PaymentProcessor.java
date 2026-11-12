@@ -12,8 +12,11 @@ public class PaymentProcessor {
      *
      * @param method the payment method to use
      * @param amount the amount to charge
+     * @return true if the rail accepted the payment, false if it declined.
+     *         A decline is a normal business outcome (e.g. wallet balance too
+     *         low), so it travels back as a return value, not an exception.
      */
-    public void processPayment(PaymentMethod method, double amount) {
+    public boolean processPayment(PaymentMethod method, double amount) {
         // Settlement expectations come from the rail's capability group,
         // not from knowing which rail it is.
         if (method instanceof InstantSettlement) {
@@ -30,8 +33,11 @@ public class PaymentProcessor {
             System.out.println("Payment successful via " + method.getPaymentType());
             System.out.println("Amount: R" + String.format("%.0f", amount));
         } else {
-            // Students can extend here: handle payment failure
+            // A rail applied its own rule and said no (e.g. wallet balance
+            // too low). The processor just reports the answer - the rule
+            // itself belongs to the rail, never to this class.
             System.out.println("Payment failed via " + method.getPaymentType());
         }
+        return success;
     }
 }

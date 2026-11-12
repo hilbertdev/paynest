@@ -106,11 +106,22 @@ public class Order {
      * by the Capstone 2 demo in {@code PayNestApplication}.
      *
      * @param paymentMethod the payment method to use for checkout
+     * @return true if the payment succeeded, false if the rail declined it.
+     *         The checkout reacts to the rail's answer: a declined payment
+     *         means the order is NOT completed. This is why each rail's own
+     *         rules matter - the checkout trusts whatever the rail decides.
      */
-    public void checkout(PaymentMethod paymentMethod) {
+    public boolean checkout(PaymentMethod paymentMethod) {
         double total = calculateTotal();
         PaymentProcessor processor = new PaymentProcessor();
-        processor.processPayment(paymentMethod, total);
-        System.out.println("Order completed successfully.");
+        boolean success = processor.processPayment(paymentMethod, total);
+        if (success) {
+            System.out.println("Order completed successfully.");
+        } else {
+            // The rail declined (its own rule, e.g. wallet balance too low).
+            // The order stays incomplete - no exception needed, just an honest answer.
+            System.out.println("Order could not be completed: payment was declined.");
+        }
+        return success;
     }
 }
