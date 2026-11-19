@@ -46,9 +46,11 @@ public final class Capstone3Debrief {
     // ISSUE 1: PaymentMethod is an interface
     // =====================================================================
     //
-    // The brief says: "Define a PaymentMethod interface". Marking follows
-    // the brief, so this is an interface with exactly the two methods the
-    // starter code gives you.
+    // The brief says: "Define a PaymentMethod interface", and the starter
+    // code gives you exactly the two methods below. In class I showed an
+    // abstract parent class instead, which is also a legitimate design.
+    // I am aligning this design point with the rest of the team, and for
+    // this debrief we work with the interface as the brief describes it.
     //
     // DEFINITION - interface: a contract. It says WHAT a payment method can
     // do (process an amount, name itself) and says nothing about HOW.
@@ -61,8 +63,8 @@ public final class Capstone3Debrief {
     // abstract parent for that. Two tools that keep the interface:
     //   (a) a static helper that every rail can call (see ISSUE 4), and
     //   (b) a default method on the interface (see label() below).
-    // An abstract parent class is a legitimate design in general, but the
-    // brief asked for an interface, so submit the interface.
+    // Both designs are worth knowing; the team is aligning on one answer,
+    // and this file follows the brief's interface.
     interface PaymentMethod {
 
         /**
